@@ -14,35 +14,47 @@ import { PieChartData } from 'src/app/core/models/pie-chart-data.model';
 export class HomeComponent implements OnInit {
   public olympics$: Observable<PieChartData[]> = of([]); // Observable initialisé avec un tableau vide
   
-  public pieChartData: PieChartData[] = []; // Tableau vide pour les données du graphique en secteurs
-  public colorScheme: Color = { // Schéma de couleurs pour le graphique en secteurs
+  public pieChartData: PieChartData[] = []; // Tableau vide pour les données du graphique
+  public colorScheme: Color = { // Schéma de couleurs pour le graphique
     name: 'colorScheme',
     selectable: true,
     group: ScaleType.Ordinal,
     domain: ['#b8cbe7', '#956065', '#793d52', '#89a2db','#9780a1','#bfe0f1']
   };
 
+  public totalYears: number = 0; // Propriété pour stocker le nombre total d'années
+  public totalCountries: number = 0; // Propriété pour stocker le nombre total de pays
+
   constructor(private olympicService: OlympicService) {}
 
   ngOnInit(): void {
-    this.olympics$ = this.olympicService.getOlympics().pipe( 
-      // Appel via GET sur OlympicService pour retourner un Observable
-      map((olympics: Olympic[] | undefined) => { 
-        // Transformation du tableau Olympic[] en un nouveau tableau
-        return (olympics || []).map(olympic => ({ 
-          // Transformation de chaque objet olympic en un nouvel objet avec des propriétés name et value
-          name: olympic.country, 
-          // La propriété name de l'objet est assignée à la valeur olympic.country
+    this.olympics$ = this.olympicService.getOlympics().pipe( // Appel via GET sur OlympicService pour retourner un Observable
+      map((olympics: Olympic[] | undefined) => { // Transformation du tableau Olympic[] en un nouveau tableau
+        const olympicsData = olympics || []; // Initialisation de olympicsData avec le tableau olympics
+        
+        // Calcul du nombre total d'années
+        const yearsSet = new Set<number>(); // Création d'un ensemble pour stocker les années uniques via Set
+        olympicsData.forEach(olympic => { // Parcours de chaque objet olympic dans olympicsData
+          olympic.participations.forEach(participation => { // Parcours de chaque participation dans l'objet olympic
+            yearsSet.add(participation.year); // Ajout de l'année de participation à l'ensemble yearsSet
+          });
+        });
+        this.totalYears = yearsSet.size; // Assignation de la taille de yearsSet à la propriété totalYears
+
+        // Calcul du nombre total de pays
+        this.totalCountries = olympicsData.length; // Assignation de la longueur de olympicsData à la propriété totalCountries
+
+        return olympicsData.map(olympic => ({ // Transformation de chaque objet olympic depuis olympicsData en un nouvel objet avec des propriétés name et value
+          name: olympic.country, // La propriété name de l'objet est assignée à la valeur olympic.country
           value: olympic.participations.reduce((total, participation) => total + participation.medalsCount, 0)
           // La propriété value est la somme des médailles pour chaque participation
         }));
       })
     );
 
-    this.olympics$.subscribe(data => { 
-      // Abonnement à l'observable olympics$
-      this.pieChartData = data; 
-      // Mise à jour de pieChartData dès qu'il reçoit des nouvelles données
+    this.olympics$.subscribe(data => { // Abonnement à l'observable olympics$
+      this.pieChartData = data; // Mise à jour de pieChartData dès qu'il reçoit des nouvelles données
     });
+
   }
 }

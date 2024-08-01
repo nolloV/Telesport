@@ -1,9 +1,22 @@
 <h2>Olympic games app</h2>
 <hr />
 <p>{{ (olympics$ | async)?.length }} data loaded</p>
+<div class="chartContainer">
+  <h3 class="chartContainer__title">Medals per Country</h3>
 
-<ngx-charts-pie-chart
-  [scheme]="colorScheme"
-  [results]="pieChartData"
-  [labels]="true"
-/>
+  <div class="chartContainer__stats-container">
+    <h4 class="chartContainer__stats-container--item">
+      Number of JOs <br /><span>{{ totalYears }}</span>
+    </h4>
+    <h4 class="chartContainer__stats-container--item">
+      Number of countries <br /><span>{{ totalCountries }}</span>
+    </h4>
+  </div>
+</div>
+<div class="piechart">
+  <ngx-charts-pie-chart
+    [scheme]="colorScheme"
+    [results]="pieChartData"
+    [labels]="true"
+  ></ngx-charts-pie-chart>
+</div>

@@ -1,0 +1,40 @@
+.chartContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: "Stem", sans-serif;
+
+  &__title {
+    background-color: #04838f;
+    color: #ffffff;
+    padding: 10px;
+    border-radius: 10px;
+    font-weight: 300;
+    font-size: larger;
+  }
+
+  &__stats-container {
+    display: flex;
+    gap: 20px;
+
+    &--item {
+      color: #6a6a6a;
+      margin: 0;
+      border: 2px solid #04838f;
+      border-radius: 10px;
+      padding: 10px;
+      text-align: center;
+      font-weight: 300;
+
+      // Styles spécifiques pour totalYears et totalCountries
+      span {
+        color: #000000;
+        font-weight: 800;
+      }
+    }
+  }
+}
+.piechart {
+  width: 100%;
+  height: auto;
+}
