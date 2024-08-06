@@ -5,6 +5,7 @@ import { OlympicService } from '../../core/services/olympic.service';
 import { Olympic } from '../../core/models/Olympic';
 import { Color, ScaleType } from '@swimlane/ngx-charts';
 import { PieChartData } from 'src/app/core/models/pie-chart-data.model';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -25,7 +26,7 @@ export class HomeComponent implements OnInit {
   public totalYears: number = 0; // Propriété pour stocker le nombre total d'années
   public totalCountries: number = 0; // Propriété pour stocker le nombre total de pays
 
-  constructor(private olympicService: OlympicService) {}
+  constructor(private olympicService: OlympicService, private router : Router) {}
 
   ngOnInit(): void {
     this.olympics$ = this.olympicService.getOlympics().pipe( // Appel via GET sur OlympicService pour retourner un Observable
@@ -45,9 +46,11 @@ export class HomeComponent implements OnInit {
         this.totalCountries = olympicsData.length; // Assignation de la longueur de olympicsData à la propriété totalCountries
 
         return olympicsData.map(olympic => ({ // Transformation de chaque objet olympic depuis olympicsData en un nouvel objet avec des propriétés name et value
+          id: olympic.id, // Récupérer l'ID
           name: olympic.country, // La propriété name de l'objet est assignée à la valeur olympic.country
           value: olympic.participations.reduce((total, participation) => total + participation.medalsCount, 0)
           // La propriété value est la somme des médailles pour chaque participation
+
         }));
       })
     );
@@ -55,6 +58,21 @@ export class HomeComponent implements OnInit {
     this.olympics$.subscribe(data => { // Abonnement à l'observable olympics$
       this.pieChartData = data; // Mise à jour de pieChartData dès qu'il reçoit des nouvelles données
     });
-
+  }
+  onCountryClick(event: any) {
+    // Récupère le nom du pays à partir de l'événement
+    const countryName = event.name; 
+  
+    // Cherche le pays correspondant dans les données du graphique à secteurs
+    const country = this.pieChartData.find(country => country.name === countryName);
+  
+    // Si un pays correspondant est trouvé
+    if (country) {
+      // Récupère l'ID du pays
+      const countryId = country.id;
+  
+      // Navigue vers la page de détail du pays en utilisant l'ID
+      this.router.navigate(['/detail', countryId]);
+    }
   }
 }

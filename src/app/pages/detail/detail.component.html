@@ -1,0 +1,40 @@
+<div class="chartContainer">
+  <h3 class="chartContainer__title">{{ countryName }}</h3>
+  <div class="chartContainer__stats-container">
+    <h4 class="chartContainer__stats-container--item">
+      Number of entries <br /><span>{{ totalParticipations }}</span>
+    </h4>
+    <h4 class="chartContainer__stats-container--item">
+      Total number medals <br /><span>{{ totalMedals }}</span>
+    </h4>
+    <h4 class="chartContainer__stats-container--item">
+      Total number of athletes <br /><span>{{ totalAthletes }}</span>
+    </h4>
+  </div>
+</div>
+
+<div *ngIf="lineChartData.length > 0">
+  <ngx-charts-line-chart
+    [scheme]="colorScheme"
+    [results]="lineChartData"
+    [gradient]="true"
+    [xAxis]="true"
+    [yAxis]="true"
+    [showXAxisLabel]="true"
+    [showYAxisLabel]="true"
+    [xAxisLabel]="'Dates'"
+  >
+  </ngx-charts-line-chart>
+</div>
+
+<div *ngIf="lineChartData.length === 0">
+  <p>Aucune donnée disponible pour ce pays.</p>
+</div>
+<div class="chartContainer__return">
+  <button
+    class="chartContainer__stats-container--item chartContainer__return--button"
+    routerLink=""
+  >
+    Return
+  </button>
+</div>

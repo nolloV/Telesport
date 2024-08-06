@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { Olympic } from '../models/Olympic';
 
@@ -30,4 +30,9 @@ export class OlympicService {
   getOlympics() {
     return this.olympics$.asObservable();
   }
+getCountryData(): Observable<Olympic[]> {
+    return this.http.get<Olympic[]>(this.olympicUrl);
+}
+  // Utilise la méthode http pour faire un appel GET vers l'URL indiqué
+  // et retourne un Observable qui émet un tableau d'objets Olympic
 }
