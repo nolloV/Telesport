@@ -19,5 +19,11 @@
     [results]="pieChartData"
     [labels]="true"
     (select)="onCountryClick($event)"
-  ></ngx-charts-pie-chart>
+  >
+    <ng-template #tooltipTemplate let-model="model">
+      <div class="piechart__custom-tooltip">
+        {{ model.name }} <br />🏅{{ model.value }}
+      </div>
+    </ng-template>
+  </ngx-charts-pie-chart>
 </div>

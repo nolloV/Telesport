@@ -59,20 +59,20 @@ export class HomeComponent implements OnInit {
       this.pieChartData = data; // Mise à jour de pieChartData dès qu'il reçoit des nouvelles données
     });
   }
-  onCountryClick(event: any) {
-    // Récupère le nom du pays à partir de l'événement
-    const countryName = event.name; 
-  
-    // Cherche le pays correspondant dans les données du graphique à secteurs
-    const country = this.pieChartData.find(country => country.name === countryName);
-  
-    // Si un pays correspondant est trouvé
-    if (country) {
-      // Récupère l'ID du pays
-      const countryId = country.id;
-  
-      // Navigue vers la page de détail du pays en utilisant l'ID
-      this.router.navigate(['/detail', countryId]);
-    }
+ onCountryClick(event: any) {
+  // Récupère le nom du pays à partir de l'événement
+  const countryName = event.name; 
+
+  // Cherche le pays correspondant dans les données du graphique à secteurs
+  const country = this.pieChartData.find(country => country.name === countryName);
+
+  // Si un pays correspondant est trouvé
+  if (country) {
+    // Récupère l'ID du pays
+    const countryId = country.id;
+
+    // Navigue vers la page de détail du pays en utilisant l'ID
+    this.router.navigate(['/detail', countryId]);
   }
+}
 }

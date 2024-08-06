@@ -2,7 +2,6 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-family: "Stem", sans-serif;
 
   &__title {
     background-color: #04838f;
@@ -37,4 +36,8 @@
 .piechart {
   width: 100%;
   height: auto;
+  &__custom-tooltip {
+    padding: 15px;
+    font-size: medium;
+  }
 }
