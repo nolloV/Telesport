@@ -30,9 +30,4 @@ export class OlympicService {
   getOlympics() {
     return this.olympics$.asObservable();
   }
-getCountryData(): Observable<Olympic[]> {
-    return this.http.get<Olympic[]>(this.olympicUrl);
-}
-  // Utilise la méthode http pour faire un appel GET vers l'URL indiqué
-  // et retourne un Observable qui émet un tableau d'objets Olympic
 }

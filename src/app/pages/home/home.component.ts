@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable, of, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { OlympicService } from '../../core/services/olympic.service';
 import { Olympic } from '../../core/models/Olympic';
@@ -7,13 +7,15 @@ import { Color, ScaleType } from '@swimlane/ngx-charts';
 import { PieChartData } from 'src/app/core/models/pie-chart-data.model';
 import { Router } from '@angular/router';
 
+
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
 })
+
 export class HomeComponent implements OnInit {
-  public olympics$: Observable<PieChartData[]> = of([]); // Observable initialisé avec un tableau vide
+  public olympics$: Observable<PieChartData[]> = of([]); // Observable initialisé avec un tableau vide typé comme PieChartData
   
   public pieChartData: PieChartData[] = []; // Tableau vide pour les données du graphique
   public colorScheme: Color = { // Schéma de couleurs pour le graphique
@@ -26,11 +28,13 @@ export class HomeComponent implements OnInit {
   public totalYears: number = 0; // Propriété pour stocker le nombre total d'années
   public totalCountries: number = 0; // Propriété pour stocker le nombre total de pays
 
+  private subscription: Subscription = new Subscription(); // Gestion du désabonnement
+
   constructor(private olympicService: OlympicService, private router : Router) {}
 
   ngOnInit(): void {
-    this.olympics$ = this.olympicService.getOlympics().pipe( // Appel via GET sur OlympicService pour retourner un Observable
-      map((olympics: Olympic[] | undefined) => { // Transformation du tableau Olympic[] en un nouveau tableau
+    this.olympics$ = this.olympicService.getOlympics().pipe( // Appel de getOlympic sur OlympicService pour retourner un Observable
+      map((olympics: Olympic[] | undefined) => { // Transformation des données du tableau Olympics en un nouveau tableau Olympic[]
         const olympicsData = olympics || []; // Initialisation de olympicsData avec le tableau olympics
         
         // Calcul du nombre total d'années
@@ -55,15 +59,16 @@ export class HomeComponent implements OnInit {
       })
     );
 
-    this.olympics$.subscribe(data => { // Abonnement à l'observable olympics$
+    this.olympics$.subscribe(data => { // Abonnement à l'observable olympics$ retournée avec les données name, value et ID
       this.pieChartData = data; // Mise à jour de pieChartData dès qu'il reçoit des nouvelles données
     });
   }
- onCountryClick(event: any) {
+
   // Récupère le nom du pays à partir de l'événement
+ onCountryClick(event: PieChartData) {
   const countryName = event.name; 
 
-  // Cherche le pays correspondant dans les données du graphique à secteurs
+  // Cherche le pays correspondant dans les données du graphique pieChartData
   const country = this.pieChartData.find(country => country.name === countryName);
 
   // Si un pays correspondant est trouvé
@@ -74,5 +79,8 @@ export class HomeComponent implements OnInit {
     // Navigue vers la page de détail du pays en utilisant l'ID
     this.router.navigate(['/detail', countryId]);
   }
+}
+ngOnDestroy(): void {
+  this.subscription.unsubscribe();
 }
 }

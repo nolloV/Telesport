@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { Color, ScaleType } from '@swimlane/ngx-charts';
 import { OlympicService } from 'src/app/core/services/olympic.service';
 import { LineChartData } from 'src/app/core/models/line-chart-data.model';
@@ -19,7 +20,7 @@ export class DetailComponent implements OnInit {
   public totalParticipations: number = 0; // Nombre total de participations
   public totalMedals: number = 0; // Nombre total de médailles
   public totalAthletes: number = 0; // Nombre total d'athlètes
-
+  private subscription: Subscription = new Subscription(); // Gestion du désabonnement
   public colorScheme: Color = {
     name: 'colorScheme',
     selectable: false,
@@ -41,16 +42,15 @@ export class DetailComponent implements OnInit {
 }
 
   loadData(): void { 
-    this.olympicService.getCountryData().subscribe((data: Olympic[]) => {
-      // Appel getContryData du service olympicService
-      // pour créer un Observable avec les données et s'abonner dessus
+    this.olympicService.getOlympics().subscribe((data) => {
+      // Appel getOlympics du service olympicService pour créer un Observable avec les données et s'abonner dessus
       if (!data || !Array.isArray(data)) { // Vérifie si data est null et si ce n'est pas un tableau retourne false
         console.error('Invalid data format'); // Vérification du format des données
         return;
       }
 
       const countryData = data.find((item: Olympic) => item.id === this.countryId);
-      // Recherche via .find des données du pays par identifiant dans les données data reçues par l'Observable
+      // Recherche via .find des données du pays par ID dans les données data reçues par l'Observable
       // va comparer item.id à la propriété countryID
       if (!countryData) {
         console.error('Country data not found'); // Vérification de l'existence des données du pays
@@ -59,8 +59,8 @@ export class DetailComponent implements OnInit {
 
       this.countryName = countryData.country;
       // Attribution du nom du pays dans la propriété CountryName depuis la valeur trouve dans countryData
-      this.lineChartData = [{
-        // Ajoute des données au tableau lineChartData qui servira à alimenter le graphique
+
+      this.lineChartData = [{// Ajoute des données au tableau lineChartData qui servira à alimenter le graphique        
         name: countryData.country, // Récupère le nom du pays depuis countryData
         series: countryData.participations.map((participation: Participation) => ({
           // Utilise .map pour transformer chaque élément du tableau participations en un objet participation
@@ -89,5 +89,8 @@ export class DetailComponent implements OnInit {
     // participation[key] permet d'accéder aux différentes valeurs du tableau
     // par exemple : 'medalsCount' accèdera à 'participation.medalsCount'
     // as number indique que la valeur est de type number
+  }
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 }
