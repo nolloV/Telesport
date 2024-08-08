@@ -67,17 +67,11 @@ export class HomeComponent implements OnInit {
   // Récupère le nom du pays à partir de l'événement
  onCountryClick(event: PieChartData) {
   const countryName = event.name; 
-
   // Cherche le pays correspondant dans les données du graphique pieChartData
   const country = this.pieChartData.find(country => country.name === countryName);
-
-  // Si un pays correspondant est trouvé
-  if (country) {
-    // Récupère l'ID du pays
-    const countryId = country.id;
-
-    // Navigue vers la page de détail du pays en utilisant l'ID
-    this.router.navigate(['/detail', countryId]);
+  if (country) {// Si un pays correspondant est trouvé
+    const countryId = country.id; // Récupère l'ID du pays
+    this.router.navigate(['/detail', countryId]);// Navigue vers la page de détail du pays en utilisant l'ID
   }
 }
 ngOnDestroy(): void {

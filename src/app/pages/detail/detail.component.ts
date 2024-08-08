@@ -32,12 +32,7 @@ export class DetailComponent implements OnInit {
 
   ngOnInit(): void {
     // Récupération de l'identifiant du pays depuis la valeur de la route
-    this.countryId = Number(this.route.snapshot.paramMap.get('id')!); 
-    // this.countryId : variable pour stocker l'identifiant du pays
-    // Number() : convertit le résultat en nombre
-    // this.route : utilisation d'ActivatedRoute pour accéder aux informations de la route actuelle
-    // snapshot : instantané de l'état actuel de la route
-    // paramMap.get('id') : récupère l'ID de la route
+    this.countryId = Number(this.route.snapshot.paramMap.get('id')!); // récupère l'ID de la route
     this.loadData(); // Chargement des données
 }
 
@@ -51,7 +46,6 @@ export class DetailComponent implements OnInit {
 
       const countryData = data.find((item: Olympic) => item.id === this.countryId);
       // Recherche via .find des données du pays par ID dans les données data reçues par l'Observable
-      // va comparer item.id à la propriété countryID
       if (!countryData) {
         console.error('Country data not found'); // Vérification de l'existence des données du pays
         return;
